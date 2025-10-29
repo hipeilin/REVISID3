@@ -2,6 +2,12 @@
 const dendroWidth = 150;
 const cellSize = 20;
 const glyphWidth = 500;
+const clusterWidth = 1200;
+
+// Predefine cluster IDs
+const cluster1Ids = [17, 19];
+const cluster2Ids1 = [13, 18, 0, 9, 11, 3, 15, 10, 14, 12];
+const cluster2Ids2 = [1, 5, 2, 8, 6, 16, 4, 7];
 
 function init() {
     // Load both heatmap and dendrogram data
@@ -50,16 +56,16 @@ function createVisualization(heatmapData, dendroData) {
     const cols = [...new Set(heatmapData.map(d => d.col))];
 
     const margin = { top: 50, right: 250, bottom: 50, left: 100 }; // Adjusted margin for dendrogram alignment
-    const width = cols.length * cellSize + margin.left + margin.right + glyphWidth;
+    const width = cols.length * cellSize + margin.left + margin.right + clusterWidth;
     const height = rows.length * cellSize + margin.top + margin.bottom;
 
     const yScale = d3.scaleLinear()
-        .domain([0, d3.max(root.descendants(), d => d.x)]) // Scale tree's height
-        .range([margin.top, height - margin.bottom]); // Map to heatmap's height
+        .domain([d3.min(root.descendants(), d => d.x), d3.max(root.descendants(), d => d.x)]) // Scale tree's height
+        .range([margin.top + cellSize / 2, height - margin.bottom - cellSize / 2]); // Map to heatmap's height
 
     const xScale = d3.scaleLinear()
         .domain([0, d3.max(root.descendants(), d => d.y)]) // Depth of dendrogram
-        .range([margin.left, width - margin.right - glyphWidth]); // Align with heatmap width
+        .range([margin.left, width - margin.right - clusterWidth]); // Align with heatmap width
 
     const minScore = d3.min(heatmapData, d => d.score);
     const maxScore = d3.max(heatmapData, d => d.score);
@@ -105,9 +111,6 @@ function createVisualization(heatmapData, dendroData) {
         .attr("d", d => {
             return `M${xScale(d.source.y)},${yScale(d.source.x)}V${yScale(d.target.x)}H${xScale(d.target.y)}`;
         })
-        .attr("fill", "none")
-        .attr("stroke", "black")
-        .attr("stroke-width", 1.5);
 
     dendroG.selectAll("circle")
         .data(root.descendants())
@@ -117,7 +120,6 @@ function createVisualization(heatmapData, dendroData) {
         .attr("id", d => `dendrogram-node-${d.data.id}`)
         .attr("cx", d => xScale(d.y))
         .attr("cy", d => yScale(d.x))
-        .attr("r", 3);
 
     // Add color legend (horizontal)
     const legendWidth = 20;  // Swapped: now this is the thickness
@@ -158,19 +160,46 @@ function createVisualization(heatmapData, dendroData) {
         .attr('font-size', 12)
         .attr('fill', 'black');
 
+    // Arrow gradient
+    const arrow_gradient = defs.append('linearGradient')
+        .attr('id', 'gradient-gray-black') // Unique ID for the gradient
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '100%') // Horizontal gradient from left to right
+        .attr('y2', '0%');
+    arrow_gradient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', 'lightgray'); // Start color
+    arrow_gradient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', 'black'); // End color
+    defs.append('marker')
+        .attr('id', 'arrowhead')
+        .attr('markerWidth', 5) // Width of the marker
+        .attr('markerHeight', 5) // Height of the marker
+        .attr('refX', 5) // Position of the tip (aligned with the path end)
+        .attr('refY', 2.5) // Center the arrowhead vertically
+        .attr('orient', 'auto') // Orient automatically based on the path
+        .append('path')
+        .attr('d', 'M 0 0 L 5 2.5 L 0 5 Z') // Triangle shape
+        .attr('fill', 'black');
+
     // Create cluster shapes
     const shapeWidth = 100;
     const shapeHeight = 100;
     const triangleWidthMax = 300;
     const triangleHeightMax = 100;
 
+
+
     // Create a group for all shapes
-    const shapesGroup = svg.append('g')
+    const shapesGroup1 = svg.append('g')
         .attr('class', 'cluster-group')
+        .attr('id', 'main-cluster')
         .attr('transform', `translate(${margin.left + glyphWidth}, ${margin.top})`)
 
     // Add connecting lines BEFORE triangles (so triangles appear on top)
-    const lineGroup = shapesGroup.append('g')
+    const lineGroup = shapesGroup1.append('g')
         .attr('class', 'connecting-lines');
 
     // Line from middle of the dendrogram to the first triangle
@@ -181,57 +210,46 @@ function createVisualization(heatmapData, dendroData) {
             V ${triangleHeightMax / 2}
             H 98
         `)
-        .attr('stroke', 'black')
-        .attr('stroke-width', 2)
-        .attr('fill', 'none')
         .on('mouseover', function (d) {
             d3.select(`#dendrogram-link-38-36`)
-                .attr('stroke', 'red')
-                .attr('stroke-width', 4)
+                .classed('hovered', true);
         })
         .on('mouseout', function (d) {
             d3.select(`#dendrogram-link-38-36`)
-                .attr('stroke', 'black')
-                .attr('stroke-width', 1.5)
+                .classed('hovered', false);
         });
     // Line from middle of the dendrogram to the second triangle
     lineGroup.append('path')
+        .attr('class', 'connecting-line')
         .attr('d', `
             M 0,${triangleHeightMax}
             V ${triangleHeightMax + triangleHeightMax / 2}
             H 100
         `)
-        .attr('stroke', 'black')
-        .attr('stroke-width', 2)
-        .attr('fill', 'none')
         .on('mouseover', function (d) {
             d3.select(`#dendrogram-link-38-37`)
-                .attr('stroke', 'red')
-                .attr('stroke-width', 4)
+                .classed('hovered', true);
         })
         .on('mouseout', function (d) {
             d3.select(`#dendrogram-link-38-37`)
-                .attr('stroke', 'black')
-                .attr('stroke-width', 1.5)
+                .classed('hovered', false);
         });
+
     // Append circles at the midpoints
     lineGroup.append('circle')
+        .attr('class', 'dendrogram-node')
         .attr('cx', 98)
         .attr('cy', triangleHeightMax / 2)
-        .attr('r', 3)
-        .attr('fill', 'black');
     lineGroup.append('circle')
+        .attr('class', 'dendrogram-node')
         .attr('cx', 100)
         .attr('cy', triangleHeightMax + triangleHeightMax / 2)
-        .attr('r', 3)
-        .attr('fill', 'black');
     lineGroup.append('circle')
+        .attr('class', 'dendrogram-node')
         .attr('cx', 0)
         .attr('cy', triangleHeightMax)
-        .attr('r', 3)
-        .attr('fill', 'black');
 
-    // Highlight rectangles
+    // Highlight rectangles 1 and 2
     const highlightGroup = svg.append('g')
         .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
@@ -242,7 +260,6 @@ function createVisualization(heatmapData, dendroData) {
         .attr('y', -cellSize / 2)
         .attr('width', 15 * cellSize)
         .attr('height', 3 * cellSize - cellSize / 2)
-        .attr('fill', 'rgba(255, 255, 255, 0)')
 
     const highlightRect2 = highlightGroup.append('rect')
         .attr('class', 'highlight-rect')
@@ -251,49 +268,46 @@ function createVisualization(heatmapData, dendroData) {
         .attr('y', 2 * cellSize)
         .attr('width', 15 * cellSize)
         .attr('height', 18 * cellSize + cellSize / 2)
-        .attr('fill', 'rgba(255, 255, 255, 0)')
 
-    // Gray triangle (pointing right)
-    const triangleC1 = shapesGroup.append('polygon')
+    // Triangles
+    const triangleC1 = shapesGroup1.append('polygon')
         .attr('class', 'glyph glyph-triangle glyph-interactive')
-        .attr('points', `98,${triangleHeightMax / 2} ${triangleWidthMax},${triangleHeightMax / 2 - 7} ${triangleWidthMax},${triangleHeightMax / 2 + 7}`)
+        .attr('points', `98,${triangleHeightMax / 2}
+            ${triangleWidthMax},${triangleHeightMax / 2 - 7}
+            ${triangleWidthMax},${triangleHeightMax / 2 + 7}
+            `)
         .on('mouseover', function (d) {
             d3.select(this).raise();
             d3.select('#highlight-rect-1')
-                .attr('fill', 'rgba(255, 255, 255, 0.5)')
-                .attr('stroke-width', 4)
-                .attr('stroke', 'red')
-                .attr('stroke-dasharray', '8 6');
+                .classed('hovered', true);
         })
         .on('mouseout', function (d) {
             d3.select('#highlight-rect-1')
-                .attr('fill', 'rgba(255, 255, 255, 0)')
-                .attr('stroke-width', 0)
+                .classed('hovered', false);
         });
 
-    const triangleC2 = shapesGroup.append('polygon')
+    const triangleC2 = shapesGroup1.append('polygon')
         .attr('class', 'glyph glyph-triangle glyph-interactive')
         .attr('transform', `translate(0, ${triangleHeightMax})`)
-        .attr('points', `100,${triangleHeightMax / 2} ${triangleWidthMax},${triangleHeightMax / 2 - 48} ${triangleWidthMax},${triangleHeightMax / 2 + 48}`)
+        .attr('points', `100,${triangleHeightMax / 2}
+            ${triangleWidthMax},${triangleHeightMax / 2 - 48}
+            ${triangleWidthMax},${triangleHeightMax / 2 + 48}
+            `)
         .on('mouseover', function (d) {
             d3.select(this).raise();
             d3.select('#highlight-rect-2')
-                .attr('fill', 'rgba(255, 255, 255, 0.5)')
-                .attr('stroke-width', 4)
-                .attr('stroke', 'red')
-                .attr('stroke-dasharray', '8 6');
+                .classed('hovered', true);
         })
         .on('mouseout', function (d) {
             d3.select('#highlight-rect-2')
-                .attr('fill', 'rgba(255, 255, 255, 0)')
-                .attr('stroke-width', 0)
+                .classed('hovered', false);
         });
 
     // Create a color scale for conciseness, min value is 0.38 and max value is 7.7
     const colorScaleIntra = d3.scaleSequential(d3.interpolateOranges)
         .domain([0.38, 7.66]);
 
-    const squareC1 = shapesGroup.append('rect')
+    const squareC1 = shapesGroup1.append('rect')
         .attr('class', 'glyph glyph-square glyph-interactive')
         .datum(0.38)
         .attr('x', triangleWidthMax)
@@ -301,34 +315,27 @@ function createVisualization(heatmapData, dendroData) {
         .attr('width', shapeWidth)
         .attr('height', shapeHeight)
         .attr('fill', d => colorScaleIntra(d))
-        // .attr('stroke', 'black')
-        // .attr('stroke-width', 2)
         .on('mouseover', function (d) {
             d3.select(this).raise();
             const leafIds = root.leaves()
-                .filter(leaf => leaf.data.id == 19 || leaf.data.id == 17)
+                .filter(leaf => cluster1Ids.includes(leaf.data.id))
                 .map(leaf => `#dendrogram-node-${leaf.data.id}`)
                 .join(',');
 
             d3.selectAll(leafIds)
-                .attr('fill', 'white')
-                .attr('r', 6)
-                .attr('stroke', 'red')
-                .attr('stroke-width', 2);
+                .classed('hovered', true);
         })
         .on('mouseout', function (d) {
             const leafIds = root.leaves()
-                .filter(leaf => leaf.data.id == 19 || leaf.data.id == 17)
+                .filter(leaf => cluster1Ids.includes(leaf.data.id))
                 .map(leaf => `#dendrogram-node-${leaf.data.id}`)
                 .join(',');
 
             d3.selectAll(leafIds)
-                .attr('fill', 'black')
-                .attr('r', 3)
-                .attr('stroke-width', 0);
+                .classed('hovered', false);
         });
 
-    const squareC2 = shapesGroup.append('rect')
+    const squareC2 = shapesGroup1.append('rect')
         .attr('class', 'glyph glyph-square glyph-interactive')
         .datum(7.66)
         .attr('x', triangleWidthMax + shapeWidth)
@@ -341,26 +348,21 @@ function createVisualization(heatmapData, dendroData) {
         .on('mouseover', function (d) {
             d3.select(this).raise();
             const leafIds = root.leaves()
-                .filter(leaf => leaf.data.id !== 19 && leaf.data.id !== 17)
+                .filter(leaf => !cluster1Ids.includes(leaf.data.id))
                 .map(leaf => `#dendrogram-node-${leaf.data.id}`)
                 .join(',');
 
             d3.selectAll(leafIds)
-                .attr('fill', 'white')
-                .attr('r', 6)
-                .attr('stroke', 'red')
-                .attr('stroke-width', 2);
+                .classed('hovered', true);
         })
         .on('mouseout', function (d) {
             const leafIds = root.leaves()
-                .filter(leaf => leaf.data.id !== 19 && leaf.data.id !== 17)
+                .filter(leaf => !cluster1Ids.includes(leaf.data.id))
                 .map(leaf => `#dendrogram-node-${leaf.data.id}`)
                 .join(',');
 
             d3.selectAll(leafIds)
-                .attr('fill', 'black')
-                .attr('r', 3)
-                .attr('stroke-width', 0);
+                .classed('hovered', false);
         });
 
     // Define the diagonal stripe pattern
@@ -387,13 +389,197 @@ function createVisualization(heatmapData, dendroData) {
         .attr('height', 12)
         .attr('fill', 'black');
 
-    const squareC3 = shapesGroup.append('rect')
+    const squareC3 = shapesGroup1.append('rect')
         .attr('class', 'glyph glyph-square')
         .attr('x', triangleWidthMax)
         .attr('y', shapeHeight)
         .attr('width', shapeWidth)
         .attr('height', shapeHeight)
         .attr('fill', 'url(#diagonal-stripe-3)')
+
+    // Subcluster 
+    // Simple curved path with dashes
+    const dashedArrow = svg.append('g')
+        .attr('class', 'dashed-arrow')
+        .attr('transform', `translate(${margin.left + glyphWidth}, ${margin.top})`);
+
+    dashedArrow.append('path')
+        .attr('d', `M ${triangleWidthMax + 2.05 * shapeWidth}, ${2 * shapeHeight - shapeHeight / 2} 
+            C ${glyphWidth * 1}, ${2 * shapeHeight - shapeHeight / 2}
+            ${glyphWidth * 1.35}, ${2.2 * shapeHeight - shapeHeight / 2}
+            ${glyphWidth * 1.6}, ${2.5 * shapeHeight - shapeHeight / 1.33}`)  // Quadratic curve
+        .attr('stroke', 'url(#gradient-gray-black)')
+        .attr('stroke-width', 4)
+        .attr('stroke-dasharray', '12,6')  // Creates dashed pattern: 5px dash, 5px gap
+        .attr('fill', 'none')
+        .attr('marker-end', 'url(#arrowhead)');
+
+    const shapesGroup2 = svg.append('g')
+        .attr('class', 'cluster-group')
+        .attr('id', 'subcluster')
+        .attr('transform', `translate(${margin.left + glyphWidth * 2.6}, ${margin.top * 2.5})`)
+
+    const lineGroup2 = shapesGroup2.append('g')
+        .attr('class', 'connecting-lines');
+
+    lineGroup2.append('path')
+        .attr('class', 'connecting-line')
+        .attr('d', `
+            M 0,${triangleHeightMax}
+            V ${triangleHeightMax / 2}
+            H 105
+        `)
+        .on('mouseover', function (d) {
+            d3.select(`#dendrogram-link-37-35`)
+                .classed('hovered', true);
+        })
+        .on('mouseout', function (d) {
+            d3.select(`#dendrogram-link-37-35`)
+                .classed('hovered', false);
+        });
+
+    lineGroup2.append('path')
+        .attr('class', 'connecting-line')
+        .attr('d', `
+                M 0,${triangleHeightMax}
+                V ${triangleHeightMax + triangleHeightMax / 2}
+                H 190
+            `)
+        .on('mouseover', function (d) {
+            d3.select(`#dendrogram-link-37-32`)
+                .classed('hovered', true);
+        })
+        .on('mouseout', function (d) {
+            d3.select(`#dendrogram-link-37-32`)
+                .classed('hovered', false);
+        });
+
+    // Circles
+    lineGroup2.append('circle')
+        .attr('class', 'dendrogram-node')
+        .attr('cx', 105)
+        .attr('cy', triangleHeightMax / 2)
+    lineGroup2.append('circle')
+        .attr('class', 'dendrogram-node')
+        .attr('cx', 190)
+        .attr('cy', triangleHeightMax + triangleHeightMax / 2)
+    lineGroup2.append('circle')
+        .attr('class', 'dendrogram-node')
+        .attr('cx', 0)
+        .attr('cy', triangleHeightMax)
+
+    // Highlight rectangles 3 and 4
+    const highlightRect3 = highlightGroup.append('rect')
+        .attr('class', 'highlight-rect')
+        .attr('id', 'highlight-rect-3')
+        .attr('x', 6 * cellSize - cellSize / 2)
+        .attr('y', 2 * cellSize)
+        .attr('width', 15 * cellSize)
+        .attr('height', 10 * cellSize)
+
+    const highlightRect4 = highlightGroup.append('rect')
+        .attr('class', 'highlight-rect')
+        .attr('id', 'highlight-rect-4')
+        .attr('x', 6 * cellSize - cellSize / 2)
+        .attr('y', 12 * cellSize)
+        .attr('width', 15 * cellSize)
+        .attr('height', 8 * cellSize + cellSize / 2)
+
+    // Triangles
+    const triangleC4 = shapesGroup2.append('polygon')
+        .attr('class', 'glyph glyph-triangle glyph-interactive')
+        .attr('points', `105,${triangleHeightMax / 2} 
+            ${triangleWidthMax},${triangleHeightMax / 2 - 48} 
+            ${triangleWidthMax},${triangleHeightMax / 2 + 48}`)
+        .on('mouseover', function (d) {
+            d3.select(this).raise();
+            d3.select('#highlight-rect-3')
+                .classed('hovered', true);
+        })
+        .on('mouseout', function (d) {
+            d3.select('#highlight-rect-3')
+                .classed('hovered', false);
+        });
+
+    const triangleC5 = shapesGroup2.append('polygon')
+        .attr('class', 'glyph glyph-triangle glyph-interactive')
+        .attr('transform', `translate(0, ${triangleHeightMax})`)
+        .attr('points', `190,${triangleHeightMax / 2}
+            ${triangleWidthMax},${triangleHeightMax / 2 - 38}
+            ${triangleWidthMax},${triangleHeightMax / 2 + 38}`)
+        .on('mouseover', function (d) {
+            d3.select(this).raise();
+            d3.select('#highlight-rect-4')
+                .classed('hovered', true);
+        })
+        .on('mouseout', function (d) {
+            d3.select('#highlight-rect-4')
+                .classed('hovered', false);
+        });
+
+    const squareC4 = shapesGroup2.append('rect')
+        .datum(5)
+        .attr('class', 'glyph glyph-square glyph-interactive')
+        .attr('x', triangleWidthMax)
+        .attr('y', 0)
+        .attr('width', shapeWidth)
+        .attr('height', shapeHeight)
+        .attr('fill', d => colorScaleIntra(d))
+        .on('mouseover', function (d) {
+            d3.select(this).raise();
+            const leafIds = root.leaves()
+                .filter(leaf => cluster2Ids1.includes(leaf.data.id))
+                .map(leaf => `#dendrogram-node-${leaf.data.id}`)
+                .join(',');
+
+            d3.selectAll(leafIds)
+                .classed('hovered', true);
+        })
+        .on('mouseout', function (d) {
+            const leafIds = root.leaves()
+                .filter(leaf => cluster2Ids1.includes(leaf.data.id))
+                .map(leaf => `#dendrogram-node-${leaf.data.id}`)
+                .join(',');
+
+            d3.selectAll(leafIds)
+                .classed('hovered', false);
+        });
+
+    const squareC5 = shapesGroup2.append('rect')
+        .datum(4.2)
+        .attr('class', 'glyph glyph-square glyph-interactive')
+        .attr('x', triangleWidthMax + shapeWidth)
+        .attr('y', shapeHeight)
+        .attr('width', shapeWidth)
+        .attr('height', shapeHeight)
+        .attr('fill', d => colorScaleIntra(d))
+        .on('mouseover', function (d) {
+            d3.select(this).raise();
+            const leafIds = root.leaves()
+                .filter(leaf => cluster2Ids2.includes(leaf.data.id))
+                .map(leaf => `#dendrogram-node-${leaf.data.id}`)
+                .join(',');
+            d3.selectAll(leafIds)
+                .classed('hovered', true);
+        })
+        .on('mouseout', function (d) {
+            const leafIds = root.leaves()
+                .filter(leaf => cluster2Ids2.includes(leaf.data.id))
+                .map(leaf => `#dendrogram-node-${leaf.data.id}`)
+                .join(',');
+            d3.selectAll(leafIds)
+                .classed('hovered', false);
+        });
+
+    const squareC6 = shapesGroup2.append('rect')
+        .attr('class', 'glyph glyph-square')
+        .attr('x', triangleWidthMax)
+        .attr('y', shapeHeight)
+        .attr('width', shapeWidth)
+        .attr('height', shapeHeight)
+        .attr('fill', 'url(#diagonal-stripe-3)')
+
+
 }
 
 

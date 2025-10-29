@@ -189,11 +189,23 @@
         }
 
         .dendrogram-node {
+            transition: all ease 0.3s;
+            fill: black;
+            r: 3px;
+            stroke: black;
+            stroke-width: 0;
+        }
+
+        .dendrogram-node.hovered {
             transition: all ease 0.6s;
+            fill: red;
+            r: 6px;
+            stroke: black;
+            stroke-width: 2px;
         }
 
         .glyph {
-            transition: all ease 0.6s;
+            transition: all ease 0.3s;
             stroke: black;
             stroke-width: 2px;
         }
@@ -206,7 +218,6 @@
             fill: white;
             stroke: red;
             stroke-width: 4px;
-            stroke-dasharray: 8 6;
         }
 
         .glyph-triangle {
@@ -214,13 +225,44 @@
         }
 
         .highlight-rect {
-            transition: all ease 0.6s;
+            transition: all ease 0.3s;
+            fill: rgba(255, 255, 255, 0);
+            stroke: none;
+            stroke-width: 0;
         }
 
-        .dendrogram-link {
+        .highlight-rect.hovered {
             transition: all ease 0.6s;
+            fill: rgba(255, 255, 255, 0.6);
+            stroke: red;
+            stroke-width: 4px;
+            stroke-dasharray: 8 6;
         }
 
         .connecting-line {
+            transition: all ease 0.3s;
             cursor: pointer;
+            stroke: black;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .connecting-line:hover {
+            transition: all ease 0.6s;
+            stroke: red;
+            stroke-width: 4px;
+        }
+
+        .dendrogram-link {
+            transition: all ease 0.3s;
+            fill: none;
+            stroke: black;
+            stroke-width: 1.5px;
+        }
+
+        .dendrogram-link.hovered {
+            transition: all ease 0.6s;
+            stroke: red;
+            stroke-width: 4px;
+            stroke-dasharray: 8 6;
         }

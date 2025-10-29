@@ -184,3 +184,43 @@
             display: block;
         }
 
+        .cell {
+            opacity: 0.8;
+        }
+
+        .dendrogram-node {
+            transition: all ease 0.6s;
+        }
+
+        .glyph {
+            transition: all ease 0.6s;
+            stroke: black;
+            stroke-width: 2px;
+        }
+
+        .glyph-interactive {
+            cursor: pointer;
+        }
+
+        .glyph-interactive:hover {
+            fill: white;
+            stroke: red;
+            stroke-width: 4px;
+            stroke-dasharray: 8 6;
+        }
+
+        .glyph-triangle {
+            fill: #999999;
+        }
+
+        .highlight-rect {
+            transition: all ease 0.6s;
+        }
+
+        .dendrogram-link {
+            transition: all ease 0.6s;
+        }
+
+        .connecting-line {
+            cursor: pointer;
+        }

@@ -2,7 +2,7 @@
 const dendroWidth = 150;
 const cellSize = 20;
 const glyphWidth = 500;
-const clusterWidth = 1200;
+const clusterWidth = 1000;
 
 // Predefine cluster IDs
 const cluster1Ids = [17, 19];
@@ -73,12 +73,25 @@ function createVisualization(heatmapData, dendroData) {
     const heatmap_colorscale = d3.scaleSequential(d3.interpolateBlues)
         .domain([maxScore, minScore]);
 
-    let svg = d3.select("#example")
+    let _svg = d3.select("#example")
         .attr("width", width)
         .attr("height", height);
 
     // Clear any existing content
-    svg.selectAll("*").remove();
+    _svg.selectAll("*").remove();
+
+    // Create a main group that will be panned
+    const svg = _svg.append('g');
+
+    // Setup zoom behavior (pan only, no zoom)
+    const zoom = d3.zoom()
+        .scaleExtent([1, 1])  // Lock zoom at 1x (pan only)
+        .on('zoom', (event) => {
+            svg.attr('transform', event.transform);
+        });
+
+    // Apply zoom to SVG
+    _svg.call(zoom);
 
     // Create heatmap group
     const heatmapG = svg.append("g")
@@ -152,6 +165,7 @@ function createVisualization(heatmapData, dendroData) {
 
     // Legend  label vertical
     svg.append('text')
+        .attr('class', 'legend-label')
         .attr('x', legendX + legendWidth + 25)
         .attr('y', legendHeight / 2)
         .attr('transform', `rotate(-90,${legendX + legendWidth + 25},${legendY + legendHeight / 2})`)
@@ -406,8 +420,8 @@ function createVisualization(heatmapData, dendroData) {
     dashedArrow.append('path')
         .attr('d', `M ${triangleWidthMax + 2.05 * shapeWidth}, ${2 * shapeHeight - shapeHeight / 2} 
             C ${glyphWidth * 1}, ${2 * shapeHeight - shapeHeight / 2}
-            ${glyphWidth * 1.35}, ${2.2 * shapeHeight - shapeHeight / 2}
-            ${glyphWidth * 1.6}, ${2.5 * shapeHeight - shapeHeight / 1.33}`)  // Quadratic curve
+            ${glyphWidth * 1.05}, ${2.2 * shapeHeight - shapeHeight / 2}
+            ${glyphWidth * 1.22}, ${2.5 * shapeHeight - shapeHeight / 1.33}`)  // Quadratic curve
         .attr('stroke', 'url(#gradient-gray-black)')
         .attr('stroke-width', 4)
         .attr('stroke-dasharray', '12,6')  // Creates dashed pattern: 5px dash, 5px gap
@@ -417,7 +431,7 @@ function createVisualization(heatmapData, dendroData) {
     const shapesGroup2 = svg.append('g')
         .attr('class', 'cluster-group')
         .attr('id', 'subcluster')
-        .attr('transform', `translate(${margin.left + glyphWidth * 2.6}, ${margin.top * 2.5})`)
+        .attr('transform', `translate(${margin.left + glyphWidth * 2.22}, ${margin.top * 2.5})`)
 
     const lineGroup2 = shapesGroup2.append('g')
         .attr('class', 'connecting-lines');
@@ -472,17 +486,17 @@ function createVisualization(heatmapData, dendroData) {
     const highlightRect3 = highlightGroup.append('rect')
         .attr('class', 'highlight-rect')
         .attr('id', 'highlight-rect-3')
-        .attr('x', 6 * cellSize - cellSize / 2)
+        .attr('x', 10 * cellSize - cellSize / 2)
         .attr('y', 2 * cellSize)
-        .attr('width', 15 * cellSize)
+        .attr('width', 11 * cellSize)
         .attr('height', 10 * cellSize)
 
     const highlightRect4 = highlightGroup.append('rect')
         .attr('class', 'highlight-rect')
         .attr('id', 'highlight-rect-4')
-        .attr('x', 6 * cellSize - cellSize / 2)
+        .attr('x', 14 * cellSize)
         .attr('y', 12 * cellSize)
-        .attr('width', 15 * cellSize)
+        .attr('width', 6 * cellSize + cellSize / 2)
         .attr('height', 8 * cellSize + cellSize / 2)
 
     // Triangles

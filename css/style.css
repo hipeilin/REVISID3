@@ -5,10 +5,19 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
             overflow: hidden;
             background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
             color: #1D3160;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            user-select: none;
         }
 
         .presentation-container {
@@ -41,13 +50,13 @@
             text-align: center;
         }
 
-        .slide p {
+        /* .slide p {
             font-size: 1.3rem;
             max-width: 800px;
             text-align: center;
             line-height: 1.6;
             margin-bottom: 2rem;
-        }
+        } */
 
         /* Slide backgrounds */
         /* .slide:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
@@ -69,8 +78,9 @@
 
         .nav-button {
             background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
+            font-weight: bold;
+            border: 2px solid #1D3160;
+            color: #1D3160;
             padding: 12px 24px;
             font-size: 1rem;
             cursor: pointer;
@@ -80,13 +90,55 @@
         }
 
         .nav-button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
             transform: translateY(-2px);
         }
 
         .nav-button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
+        }
+
+        .jump-to-input {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+            border: 2px solid #1D3160;
+            color: #1D3160;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            width: 150px;
+            text-align: center;
+        }
+
+        .jump-to-input::placeholder {
+            color: rgba(29, 49, 96, 0.6);
+        }
+
+        .jump-to-input:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .jump-to-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(29, 49, 96, 0.3);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Remove spinner arrows from number input */
+        .jump-to-input::-webkit-outer-spin-button,
+        .jump-to-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .jump-to-input[type=number] {
+            appearance: textfield;
+            -moz-appearance: textfield;
         }
 
         /* Slide counter */
@@ -100,12 +152,13 @@
             backdrop-filter: blur(10px);
             font-size: 1rem;
             z-index: 1000;
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.1);
         }
 
         /* SVG Container */
         .svg-container {
             background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
+            padding: 8px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -164,6 +217,136 @@
             animation: pulse 2s infinite;
         }
 
+        /* General */
+        .heading {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            background: #DA171C;
+            display: inline-block;
+            user-select: none;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            font-style: italic;
+            padding: 0px 7px;
+            border-radius: 4px;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+        }
+
+        .title {
+            font-size: 80px;
+            font-weight: bold;
+            display: block;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .subheading {
+            font-size: 60px;
+            font-weight: normal;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .slide .main-text {
+            font-size: 72px;
+            display: block;
+            user-select: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .paragraph-container {
+            margin-bottom: 80px;
+        }
+
+        /* Team */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            justify-items: normal;
+            align-items: start;
+            margin-top: 3rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .team-grid.second-row {
+            grid-template-columns: repeat(4, 1fr);
+            margin-top: 4rem;
+        }
+
+        .profile {
+            display: flex;
+            align-items: flex-start;
+            gap: .7rem;
+            opacity: 0;
+            transform: translateY(10px);
+            /* animation: fadeUp 0.5s ease forwards; */
+        }
+
+        /* Add new class for animation */
+        .profile.animate {
+            animation: fadeUp 0.5s ease forwards;
+        }
+
+        .profile.animate:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .profile.animate:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .profile.animate:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .profile.animate:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .profile img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .profile img:hover {
+            transform: scale(.9);
+        }
+
+        .profile-info {
+            text-align: left;
+            line-height: 1.2;
+            margin-top: .5rem;
+        }
+
+        .profile-firstname {
+            font-size: 2rem;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        /* Demo */
+        #example {
+            cursor: grab;
+        }
+
+        #example:active {
+            cursor: grabbing;
+        }
+
         .heatmap-tooltip {
             position: absolute;
             background: rgba(0, 0, 0, 0.8);
@@ -186,6 +369,10 @@
 
         .cell {
             opacity: 0.8;
+        }
+
+        .legend-label {
+            user-select: none;
         }
 
         .dendrogram-node {

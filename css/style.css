@@ -1,0 +1,186 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            color: #1D3160;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slides-wrapper {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+        }
+
+        .slide h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .slide p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Slide backgrounds */
+        /* .slide:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .slide:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .slide:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .slide:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .slide:nth-child(5) { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); } */
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            z-index: 1000;
+        }
+
+        /* SVG Container */
+        .svg-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        /* SVG Styles */
+        svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        .interactive-circle {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .interactive-circle:hover {
+            filter: brightness(1.2);
+        }
+
+        .draggable {
+            cursor: move;
+        }
+
+        .bar {
+            transition: height 0.3s, fill 0.3s;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            fill: #ffeb3b !important;
+        }
+
+        /* Instructions */
+        .instructions {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Animation keyframes */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .animated {
+            animation: pulse 2s infinite;
+        }
+
+        .heatmap-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .heatmap-tooltip.visible {
+            opacity: 1;
+            display: block;
+        }
+

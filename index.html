@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SVG Presentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/d3.v7.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/nav.js" defer></script>
+    <script src="js/revisid.js" defer></script>
+</head>
+
+<body>
+    <div class="presentation-container">
+        <div class="slides-wrapper" id="slidesWrapper">
+
+            <!-- Slide 1: Title -->
+            <div class="slide">
+                <h1>Interactive SVG Presentation</h1>
+                <p>A demonstration of combining slide navigation with interactive SVG graphics</p>
+                <p class="instructions">Use arrow keys or buttons below to navigate</p>
+            </div>
+
+            <!-- Slide 2: Click to Change Colors -->
+            <div class="slide">
+                <h1>Click to Change Colors</h1>
+                <div class="svg-container">
+                    <svg width="400" height="300" id="colorSvg">
+                        <circle class="interactive-circle" cx="100" cy="150" r="60" fill="#ff6b6b"
+                            data-colors='["#ff6b6b", "#4ecdc4", "#45b7d1", "#f7dc6f", "#bb8fce"]' />
+                        <circle class="interactive-circle" cx="200" cy="150" r="60" fill="#4ecdc4"
+                            data-colors='["#4ecdc4", "#ff6b6b", "#95e1d3", "#f38181", "#aa96da"]' />
+                        <circle class="interactive-circle" cx="300" cy="150" r="60" fill="#45b7d1"
+                            data-colors='["#45b7d1", "#f7dc6f", "#ff6b6b", "#a8e6cf", "#ffd3b6"]' />
+                    </svg>
+                </div>
+                <p class="instructions">Click on any circle to cycle through colors</p>
+            </div>
+
+            <!-- Slide 3: Drag and Drop -->
+            <div class="slide">
+                <h1>Drag the Shapes</h1>
+                <div class="svg-container">
+                    <svg width="500" height="350" id="dragSvg">
+                        <rect class="draggable" x="50" y="50" width="80" height="80" fill="#e74c3c" rx="10" />
+                        <circle class="draggable" cx="250" cy="90" r="40" fill="#3498db" />
+                        <polygon class="draggable" points="400,50 450,130 350,130" fill="#2ecc71" />
+                        <ellipse class="draggable" cx="250" cy="250" rx="60" ry="40" fill="#f39c12" />
+                    </svg>
+                </div>
+                <p class="instructions">Click and drag any shape to move it around</p>
+            </div>
+
+            <!-- Slide 6: Interactive Heatmap -->
+            <div class="slide">
+                <h1>Heatmap with Dendrograms</h1>
+                <div class="svg-container" id="heatmapContainer">
+                    <svg id="combinedSvg"></svg>
+                </div>
+                <p class="instructions">Hover over cells to see values • Dendrograms overlaid show hierarchical
+                    clustering</p>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">5</span>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-button" id="prevBtn">← Previous</button>
+            <button class="nav-button" id="nextBtn">Next →</button>
+        </div>
+    </div>
+</body>
+
+</html>

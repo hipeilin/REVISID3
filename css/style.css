@@ -58,6 +58,17 @@
             margin-bottom: 2rem;
         } */
 
+        .paragraph-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .paragraph-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Slide backgrounds */
         /* .slide:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .slide:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
@@ -240,10 +251,15 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .subheading {
-            font-size: 60px;
-            font-weight: normal;
-            display: inline-block;
+        .keyword {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .boxword {
+            font-size: 24px;
+            font-weight: 500;
+            fill: #1a3a52;
             font-family: 'Inter', sans-serif;
         }
 
@@ -252,10 +268,37 @@
             display: block;
             user-select: none;
             font-family: 'Inter', sans-serif;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-text li {
+            opacity: 1;
+            transform: translateY(0);
+            margin: 1rem 0 4rem 0;
+            /* margin-bottom: 1rem 0 3rem 0 ; */
+            line-height: .8;
+        }
+
+        .subheading {
+            font-size: 54px;
+            font-weight: normal;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .main-text li:not(:first-child) {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .main-text li.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .paragraph-container {
-            margin-bottom: 80px;
+            margin-bottom: 50px;
         }
 
         /* Team */
@@ -338,9 +381,72 @@
         }
 
 
+        /* Workflow */
+        .box,
+        .box rect {
+            user-select: none;
+        }
+
+        .workflow-box-group rect {
+            transition: all 0.3s ease;
+            fill: #fff;
+            stroke: #1a3a52;
+            stroke-width: 3px;
+        }
+
+
+        .workflow-box-group:hover rect {
+            transition: all 0.6s ease;
+            fill: #1a3a52;
+        }
+
+        .workflow-box-group text {
+            transition: all 0.3s ease;
+            fill: #1a3a52;
+        }
+
+        .workflow-box-group:hover text {
+            transition: all 0.6s ease;
+            fill: #fff;
+        }
+
+
+        /* Pipeline */
+        .pipeline-box-group {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-box-group rect {
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-box-group:hover rect {
+            transition: all 0.6s ease;
+            filter: brightness(3);
+        }
+
+
+        .pipeline-detail {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 300ms ease, transform 300ms ease;
+            pointer-events: none;
+            fill: #1a3a52;
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+        }
+
+        .pipeline-detail.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
         /* Demo */
         #example {
             cursor: grab;
+            display: none;
         }
 
         #example:active {
@@ -373,6 +479,8 @@
 
         .legend-label {
             user-select: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
         }
 
         .dendrogram-node {
@@ -395,13 +503,16 @@
             transition: all ease 0.3s;
             stroke: black;
             stroke-width: 2px;
+            cursor: help;
         }
 
         .glyph-interactive {
             cursor: pointer;
         }
 
-        .glyph-interactive:hover {
+        .glyph-interactive:hover,
+        .glyph-triangle:hover,
+        .glyph-square:hover {
             fill: white;
             stroke: red;
             stroke-width: 4px;
@@ -428,7 +539,7 @@
 
         .connecting-line {
             transition: all ease 0.3s;
-            cursor: pointer;
+            cursor: help;
             stroke: black;
             stroke-width: 2px;
             fill: none;

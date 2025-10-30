@@ -1,5 +1,5 @@
 // Presentation navigation
-let currentSlide = 6;
+let currentSlide = 10;
 const slidesWrapper = document.getElementById('slidesWrapper');
 const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
@@ -9,12 +9,139 @@ const currentSlideDisplay = document.getElementById('currentSlide');
 const totalSlidesDisplay = document.getElementById('totalSlides');
 const jumpToInput = document.getElementById('jumpToInput');
 
+// Track reveal state for each slide
+let slideRevealState = {};
+
+function initializeRevealState() {
+    slides.forEach((slide, index) => {
+        const listItems = slide.querySelectorAll('.main-text li');
+        slideRevealState[index] = {
+            total: listItems.length,
+            current: 1,
+            allRevealed: listItems.length <= 1
+        };
+    });
+}
+
+
+
+function revealNextItem() {
+    const state = slideRevealState[currentSlide];
+
+    if (!state || state.allRevealed) {
+        return false; // No items to reveal
+    }
+
+    const slide = slides[currentSlide];
+    const listItems = slide.querySelectorAll('.main-text li');
+
+    if (state.current < state.total) {
+        listItems[state.current].classList.add('visible');
+        state.current++;
+
+        if (state.current >= state.total) {
+            state.allRevealed = true;
+        }
+
+        return true; // Item was revealed
+    }
+
+    return false; // No more items
+}
+
+function resetSlideReveal(slideIndex) {
+    const slide = slides[slideIndex];
+    const listItems = slide.querySelectorAll('.main-text li');
+
+    listItems.forEach(item => {
+        item.classList.remove('visible');
+    });
+
+    if (slideRevealState[slideIndex]) {
+        slideRevealState[slideIndex].current = 1;
+        slideRevealState[slideIndex].allRevealed = listItems.length <= 1;
+    }
+}
+
+function handleKeyPress(e) {
+    if (e.key === 'ArrowRight') {
+        e.preventDefault();
+
+        // Try to reveal next item first
+        const itemRevealed = revealNextItem();
+
+        // If no item was revealed, go to next slide
+        if (!itemRevealed) {
+            nextSlide();
+        }
+    } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+    } else if (e.key === ' ') {
+        e.preventDefault();
+
+        // Spacebar also reveals items
+        const itemRevealed = revealNextItem();
+
+        if (!itemRevealed) {
+            nextSlide();
+        }
+    } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToSlide(0);
+    } else if (e.key === 'End') {
+        e.preventDefault();
+        goToSlide(totalSlides - 1);
+    }
+}
+
+function setupEventListeners() {
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    document.addEventListener('keydown', handleKeyPress);
+
+    // Click anywhere on slide to reveal next item
+    document.addEventListener('click', function (e) {
+        // Don't interfere with navigation buttons
+        if (e.target.closest('.nav-button') ||
+            e.target.closest('#prevBtn') ||
+            e.target.closest('#nextBtn')) {
+            return;
+        }
+
+        // Try to reveal next item
+        revealNextItem();
+        // const itemRevealed = revealNextItem();
+
+        // If no item revealed, do nothing (or optionally go to next slide)
+        // if (!itemRevealed) {
+        //     nextSlide();
+        // }
+    });
+}
+
+function animateSlideContainers(slideIndex) {
+    const slide = slides[slideIndex];
+    const containers = slide.querySelectorAll('.paragraph-container');
+
+    containers.forEach((container, index) => {
+        setTimeout(() => {
+            container.classList.add('visible');
+        }, index * 1500); // 500ms delay between each container
+    });
+}
+
 function updateSlide() {
     slidesWrapper.style.transform = `translateX(-${currentSlide * 100}vw)`;
     currentSlideDisplay.textContent = currentSlide + 1;
     prevBtn.disabled = currentSlide === 0;
     nextBtn.disabled = currentSlide === totalSlides - 1;
-    
+
+    // Reset all list items on all slides
+    slides.forEach((slide, index) => {
+        resetSlideReveal(index);
+    });
+
     // Clear jump to input
     jumpToInput.value = "";
 
@@ -38,8 +165,19 @@ function updateSlide() {
             currentSlideElement.querySelectorAll('.profile').forEach(profile => {
                 profile.classList.add('animate');
             });
-        }, 200); // Small delay for better effect
+        }, 300); // Small delay for better effect
     }
+
+
+    // Reset all paragraph containers
+    document.querySelectorAll('.paragraph-container').forEach(container => {
+        container.classList.remove('visible');
+    });
+
+    // Animate containers on current slide
+    setTimeout(() => {
+        animateSlideContainers(currentSlide);
+    }, 200); // Small delay to ensure reset happens first
 }
 
 function nextSlide() {
@@ -61,22 +199,22 @@ prevBtn.addEventListener('click', prevSlide);
 nextBtn.addEventListener('click', nextSlide);
 
 // Keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === ' ') {
-        e.preventDefault();
-        nextSlide();
-    } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        prevSlide();
-    }
-});
+// document.addEventListener('keydown', (e) => {
+//     if (e.key === 'ArrowRight' || e.key === ' ') {
+//         e.preventDefault();
+//         nextSlide();
+//     } else if (e.key === 'ArrowLeft') {
+//         e.preventDefault();
+//         prevSlide();
+//     }
+// });
 
 // Jump to slide functionality
 function jumpToSlide() {
     const slideNumber = parseInt(jumpToInput.value);
     // Convert from 1-indexed (user input) to 0-indexed (internal)
     const slideIndex = slideNumber - 1;
-    
+
     if (!isNaN(slideIndex) && slideIndex >= 0 && slideIndex < totalSlides) {
         currentSlide = slideIndex;
         updateSlide();
@@ -106,4 +244,7 @@ jumpToInput.addEventListener('blur', () => {
 // Initialize
 totalSlidesDisplay.textContent = totalSlides;
 jumpToInput.setAttribute('max', totalSlides);
+initializeRevealState();
+
+setupEventListeners();
 updateSlide();

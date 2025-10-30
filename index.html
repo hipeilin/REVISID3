@@ -14,12 +14,18 @@
     <script src="js/d3.v7.js" defer></script>
     <script src="js/main.js" defer></script>
     <script src="js/nav.js" defer></script>
-    <script src="js/revisid.js" defer></script>
+    <script src="js/cluster_demo.js" defer></script>
 </head>
 
 <body>
     <div class="presentation-container">
         <div class="slides-wrapper" id="slidesWrapper">
+            <!-- Slide 0 -->
+            <div class="slide">
+                <div class="paragraph-container">
+                    <p class="heading">VIS 25</p>
+                </div>
+            </div>
 
             <!-- Slide 1: Intro, focus -->
             <div class="slide">
@@ -161,51 +167,46 @@
                 <div class="paragraph-container">
                     <p class="heading">Our goals</p>
                     <ul class="main-text">
-                        <li>integrate hierarchical clustering & process mining to uncover and characterize user
-                            behaviors
+                        <li>integrate <span class="keyword">hierarchical clustering</span> & <span
+                                class="keyword">process mining</span>
+                            <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span class="subheading">uncover and
+                                characterize user behaviors</span>
                         </li>
-                        <li>cluster navigation integrating domain knowledge during the analysis process
+                        <li><span class="keyword">cluster navigation</span> integrating domain knowledge
+                            <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
+                                class="subheading">during the analysis process</span>
                         </li>
-                        <li>handle unstructured interaction event sequences in a scalable, interpretable way
+                        <li>handle <span class="keyword">unstructured</span> interaction event sequences
+                            <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
+                                class="subheading">in a scalable, interpretable way</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
+            <!-- Slide 9: Workflow -->
+            <div class="slide">
+                <div class="paragraph-container">
+                    <p class="heading">Typical workflow</p>
+                    <svg id="workflowSvg"></svg>
+                </div>
+            </div>
+
+
+            <!-- Slide 10: Pipeline -->
+            <div class="slide">
+                <div class="paragraph-container">
+                    <p class="heading">Anaalytical Pipeline</p>
+                    <svg id="pipelineSvg"></svg>
+                    <svg id="example"></svg>
+                </div>
+            </div>
+
+
 
         </div>
     </div>
 
-
-    <!-- Slide 2: Click to Change Colors -->
-    <!-- <div class="slide">
-        <h1>Click to Change Colors</h1>
-        <div class="svg-container">
-            <svg width="400" height="300" id="colorSvg">
-                <circle class="interactive-circle" cx="100" cy="150" r="60" fill="#ff6b6b"
-                    data-colors='["#ff6b6b", "#4ecdc4", "#45b7d1", "#f7dc6f", "#bb8fce"]' />
-                <circle class="interactive-circle" cx="200" cy="150" r="60" fill="#4ecdc4"
-                    data-colors='["#4ecdc4", "#ff6b6b", "#95e1d3", "#f38181", "#aa96da"]' />
-                <circle class="interactive-circle" cx="300" cy="150" r="60" fill="#45b7d1"
-                    data-colors='["#45b7d1", "#f7dc6f", "#ff6b6b", "#a8e6cf", "#ffd3b6"]' />
-            </svg>
-        </div>
-        <p class="instructions">Click on any circle to cycle through colors</p>
-    </div> -->
-
-    <!-- Slide 3: Drag and Drop -->
-    <!-- <div class="slide">
-        <h1>Drag the Shapes</h1>
-        <div class="svg-container">
-            <svg width="500" height="350" id="dragSvg">
-                <rect class="draggable" x="50" y="50" width="80" height="80" fill="#e74c3c" rx="10" />
-                <circle class="draggable" cx="250" cy="90" r="40" fill="#3498db" />
-                <polygon class="draggable" points="400,50 450,130 350,130" fill="#2ecc71" />
-                <ellipse class="draggable" cx="250" cy="250" rx="60" ry="40" fill="#f39c12" />
-            </svg>
-        </div>
-        <p class="instructions">Click and drag any shape to move it around</p>
-    </div> -->
 
     <!-- Slide 6: Interactive Heatmap -->
     <!-- <div class="slide">

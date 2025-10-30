@@ -85,7 +85,7 @@ function createVisualization(heatmapData, dendroData) {
 
     // Setup zoom behavior (pan only, no zoom)
     const zoom = d3.zoom()
-        .scaleExtent([1, 1])  // Lock zoom at 1x (pan only)
+        .scaleExtent([.7, 1])  // Lock zoom at 1x (pan only)
         .on('zoom', (event) => {
             svg.attr('transform', event.transform);
         });
@@ -285,7 +285,7 @@ function createVisualization(heatmapData, dendroData) {
 
     // Triangles
     const triangleC1 = shapesGroup1.append('polygon')
-        .attr('class', 'glyph glyph-triangle glyph-interactive')
+        .attr('class', 'glyph glyph-triangle')
         .attr('points', `98,${triangleHeightMax / 2}
             ${triangleWidthMax},${triangleHeightMax / 2 - 7}
             ${triangleWidthMax},${triangleHeightMax / 2 + 7}
@@ -322,7 +322,7 @@ function createVisualization(heatmapData, dendroData) {
         .domain([0.38, 7.66]);
 
     const squareC1 = shapesGroup1.append('rect')
-        .attr('class', 'glyph glyph-square glyph-interactive')
+        .attr('class', 'glyph glyph-square')
         .datum(0.38)
         .attr('x', triangleWidthMax)
         .attr('y', 0)
@@ -350,7 +350,7 @@ function createVisualization(heatmapData, dendroData) {
         });
 
     const squareC2 = shapesGroup1.append('rect')
-        .attr('class', 'glyph glyph-square glyph-interactive')
+        .attr('class', 'glyph glyph-square')
         .datum(7.66)
         .attr('x', triangleWidthMax + shapeWidth)
         .attr('y', shapeHeight)
@@ -411,9 +411,14 @@ function createVisualization(heatmapData, dendroData) {
         .attr('height', shapeHeight)
         .attr('fill', 'url(#diagonal-stripe-3)')
 
+    // Wrap the subcluster group and arrow in a parent group that's initially hidden
+    const subclusterGroup = svg.append('g')
+        .attr('id', 'subcluster-parent-group')
+        .style('display', 'none'); // Initially hidden
+
     // Subcluster 
     // Simple curved path with dashes
-    const dashedArrow = svg.append('g')
+    const dashedArrow = subclusterGroup.append('g')
         .attr('class', 'dashed-arrow')
         .attr('transform', `translate(${margin.left + glyphWidth}, ${margin.top})`);
 
@@ -424,11 +429,11 @@ function createVisualization(heatmapData, dendroData) {
             ${glyphWidth * 1.22}, ${2.5 * shapeHeight - shapeHeight / 1.33}`)  // Quadratic curve
         .attr('stroke', 'url(#gradient-gray-black)')
         .attr('stroke-width', 4)
-        .attr('stroke-dasharray', '12,6')  // Creates dashed pattern: 5px dash, 5px gap
+        .attr('stroke-dasharray', '12,6')  // Creates dashed pattern: 12px dash, 6px gap
         .attr('fill', 'none')
         .attr('marker-end', 'url(#arrowhead)');
 
-    const shapesGroup2 = svg.append('g')
+    const shapesGroup2 = subclusterGroup.append('g')
         .attr('class', 'cluster-group')
         .attr('id', 'subcluster')
         .attr('transform', `translate(${margin.left + glyphWidth * 2.22}, ${margin.top * 2.5})`)
@@ -500,8 +505,8 @@ function createVisualization(heatmapData, dendroData) {
         .attr('height', 8 * cellSize + cellSize / 2)
 
     // Triangles
-    const triangleC4 = shapesGroup2.append('polygon')
-        .attr('class', 'glyph glyph-triangle glyph-interactive')
+    const triangleC3 = shapesGroup2.append('polygon')
+        .attr('class', 'glyph glyph-triangle')
         .attr('points', `105,${triangleHeightMax / 2} 
             ${triangleWidthMax},${triangleHeightMax / 2 - 48} 
             ${triangleWidthMax},${triangleHeightMax / 2 + 48}`)
@@ -515,7 +520,7 @@ function createVisualization(heatmapData, dendroData) {
                 .classed('hovered', false);
         });
 
-    const triangleC5 = shapesGroup2.append('polygon')
+    const triangleC4 = shapesGroup2.append('polygon')
         .attr('class', 'glyph glyph-triangle glyph-interactive')
         .attr('transform', `translate(0, ${triangleHeightMax})`)
         .attr('points', `190,${triangleHeightMax / 2}
@@ -593,7 +598,17 @@ function createVisualization(heatmapData, dendroData) {
         .attr('height', shapeHeight)
         .attr('fill', 'url(#diagonal-stripe-3)')
 
-
+    // Show subcluster when clicking squareC3
+    d3.select(triangleC2.node())
+        .on('click', function () {
+            const group = d3.select('#subcluster-parent-group');
+            const currentDisplay = group.style('display');
+            if (currentDisplay === 'none' || currentDisplay === '') {
+                group.style('display', null);
+            } else {
+                group.style('display', 'none');
+            }
+        });
 }
 
 

@@ -235,10 +235,42 @@ function createPipelineDiagram() {
             });
         }
         else if (i === 1) {
-            const exampleSvg = document.getElementById('example');
+            const exampleSvg = document.getElementById('clusterDemoSvg');
             let visible = false;
 
             // Ensure exampleSvg has initial state for animation
+            if (exampleSvg) {
+                exampleSvg.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s cubic-bezier(0.4,0,0.2,1)';
+                exampleSvg.style.transform = 'translateY(30px)';
+                exampleSvg.style.opacity = '0';
+                exampleSvg.style.display = 'none';
+            }
+
+            boxGroup.on('click', function () {
+                visible = !visible;
+                if (exampleSvg) {
+                    if (visible) {
+                        exampleSvg.style.display = 'block';
+                        setTimeout(() => {
+                            exampleSvg.style.transform = 'translateY(0)';
+                            exampleSvg.style.opacity = '1';
+                        }, 10); // allow reflow for animation
+                    } else {
+                        exampleSvg.style.transform = 'translateY(30px)';
+                        exampleSvg.style.opacity = '0';
+                        // Wait for transition before hiding
+                        setTimeout(() => {
+                            if (!visible) { // in case of rapid clicks
+                                exampleSvg.style.display = 'none';
+                            }
+                        }, 500);
+                    }
+                }
+            });
+        }
+        else if (i === 2) {
+            const exampleSvg = document.getElementById('processModelDemoSvg');
+            let visible = false;
             if (exampleSvg) {
                 exampleSvg.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s cubic-bezier(0.4,0,0.2,1)';
                 exampleSvg.style.transform = 'translateY(30px)';

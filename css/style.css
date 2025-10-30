@@ -444,13 +444,27 @@
 
 
         /* Demo */
-        #example {
+        #clusterDemoSvg {
+            margin-left: auto;
+            margin-right: auto;
             cursor: grab;
             display: none;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
         }
 
-        #example:active {
+        #clusterDemoSvg:active {
             cursor: grabbing;
+        }
+
+        #processModelDemoSvg {
+            margin-left: auto;
+            margin-right: auto;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+
+        }
+
+        #pipelineSvg {
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
         }
 
         .heatmap-tooltip {
@@ -563,4 +577,8 @@
             stroke: red;
             stroke-width: 4px;
             stroke-dasharray: 8 6;
+        }
+
+        .process-cluster-label {
+            font-family: 'Inter', sans-serif;
         }

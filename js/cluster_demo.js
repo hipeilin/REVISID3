@@ -2,7 +2,7 @@
 const dendroWidth = 150;
 const cellSize = 20;
 const glyphWidth = 500;
-const clusterWidth = 1000;
+const clusterWidth = 500;
 
 // Predefine cluster IDs
 const cluster1Ids = [17, 19];
@@ -73,7 +73,7 @@ function createVisualization(heatmapData, dendroData) {
     const heatmap_colorscale = d3.scaleSequential(d3.interpolateBlues)
         .domain([maxScore, minScore]);
 
-    let _svg = d3.select("#example")
+    let _svg = d3.select("#clusterDemoSvg")
         .attr("width", width)
         .attr("height", height);
 
@@ -610,7 +610,5 @@ function createVisualization(heatmapData, dendroData) {
             }
         });
 }
-
-
 
 init();

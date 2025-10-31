@@ -301,7 +301,7 @@ function createVisualization(heatmapData, dendroData) {
         });
 
     const triangleC2 = shapesGroup1.append('polygon')
-        .attr('class', 'glyph glyph-triangle glyph-interactive')
+        .attr('class', 'glyph glyph-triangle glyph-interactive glyph-clickable')
         .attr('transform', `translate(0, ${triangleHeightMax})`)
         .attr('points', `100,${triangleHeightMax / 2}
             ${triangleWidthMax},${triangleHeightMax / 2 - 48}
@@ -322,7 +322,7 @@ function createVisualization(heatmapData, dendroData) {
         .domain([0.38, 7.66]);
 
     const squareC1 = shapesGroup1.append('rect')
-        .attr('class', 'glyph glyph-square')
+        .attr('class', 'glyph glyph-square glyph-interactive')
         .datum(0.38)
         .attr('x', triangleWidthMax)
         .attr('y', 0)
@@ -350,7 +350,7 @@ function createVisualization(heatmapData, dendroData) {
         });
 
     const squareC2 = shapesGroup1.append('rect')
-        .attr('class', 'glyph glyph-square')
+        .attr('class', 'glyph glyph-square glyph-interactive')
         .datum(7.66)
         .attr('x', triangleWidthMax + shapeWidth)
         .attr('y', shapeHeight)

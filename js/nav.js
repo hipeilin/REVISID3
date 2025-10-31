@@ -1,5 +1,5 @@
 // Presentation navigation
-let currentSlide = 10;
+let currentSlide = 14;
 const slidesWrapper = document.getElementById('slidesWrapper');
 const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
@@ -15,10 +15,31 @@ let slideRevealState = {};
 function initializeRevealState() {
     slides.forEach((slide, index) => {
         const listItems = slide.querySelectorAll('.main-text li');
+        // Count only non-explanation-text items
+        const regularItems = Array.from(listItems).filter(item => !item.classList.contains('explaination-text'));
+        
+        // Make the first regular item visible initially
+        if (regularItems.length > 0) {
+            const firstRegularItem = regularItems[0];
+            const firstRegularIndex = Array.from(listItems).indexOf(firstRegularItem);
+            
+            // Reveal the first regular item
+            firstRegularItem.classList.add('visible');
+            
+            // Also reveal any explanation-text item that comes right before it
+            if (firstRegularIndex > 0) {
+                const prevItem = Array.from(listItems)[firstRegularIndex - 1];
+                if (prevItem.classList.contains('explaination-text')) {
+                    prevItem.classList.add('visible');
+                }
+            }
+        }
+        
         slideRevealState[index] = {
-            total: listItems.length,
+            total: regularItems.length,
             current: 1,
-            allRevealed: listItems.length <= 1
+            allRevealed: regularItems.length <= 1,
+            listItems: Array.from(listItems) // Store the full list for easier access
         };
     });
 }
@@ -32,11 +53,24 @@ function revealNextItem() {
         return false; // No items to reveal
     }
 
-    const slide = slides[currentSlide];
-    const listItems = slide.querySelectorAll('.main-text li');
-
+    const listItems = state.listItems;
+    const regularItems = listItems.filter(item => !item.classList.contains('explaination-text'));
+    
     if (state.current < state.total) {
-        listItems[state.current].classList.add('visible');
+        const nextRegularItem = regularItems[state.current];
+        const nextRegularIndex = listItems.indexOf(nextRegularItem);
+        
+        // Reveal the next regular item
+        nextRegularItem.classList.add('visible');
+        
+        // Also reveal any explanation-text item that comes right before this regular item
+        if (nextRegularIndex > 0) {
+            const prevItem = listItems[nextRegularIndex - 1];
+            if (prevItem.classList.contains('explaination-text')) {
+                prevItem.classList.add('visible');
+            }
+        }
+        
         state.current++;
 
         if (state.current >= state.total) {
@@ -51,15 +85,33 @@ function revealNextItem() {
 
 function resetSlideReveal(slideIndex) {
     const slide = slides[slideIndex];
-    const listItems = slide.querySelectorAll('.main-text li');
+    const listItems = Array.from(slide.querySelectorAll('.main-text li'));
 
     listItems.forEach(item => {
         item.classList.remove('visible');
     });
 
     if (slideRevealState[slideIndex]) {
+        const regularItems = listItems.filter(item => !item.classList.contains('explaination-text'));
         slideRevealState[slideIndex].current = 1;
-        slideRevealState[slideIndex].allRevealed = listItems.length <= 1;
+        slideRevealState[slideIndex].allRevealed = regularItems.length <= 1;
+        
+        // Make the first regular item visible again after reset
+        if (regularItems.length > 0) {
+            const firstRegularItem = regularItems[0];
+            const firstRegularIndex = listItems.indexOf(firstRegularItem);
+            
+            // Reveal the first regular item
+            firstRegularItem.classList.add('visible');
+            
+            // Also reveal any explanation-text item that comes right before it
+            if (firstRegularIndex > 0) {
+                const prevItem = listItems[firstRegularIndex - 1];
+                if (prevItem.classList.contains('explaination-text')) {
+                    prevItem.classList.add('visible');
+                }
+            }
+        }
     }
 }
 

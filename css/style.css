@@ -164,6 +164,9 @@
             font-size: 1rem;
             z-index: 1000;
             box-shadow: 0 4px 7px rgba(0, 0, 0, 0.1);
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            pointer-events: none;
         }
 
         /* SVG Container */
@@ -412,8 +415,9 @@
 
 
         /* Pipeline */
-        .pipeline-box-group {
-            cursor: pointer;
+        .pipeline-box-group,
+        .pipeline-forward-arrow {
+            cursor: help;
             transition: all 0.3s ease;
         }
 
@@ -520,13 +524,15 @@
             cursor: help;
         }
 
-        .glyph-interactive {
+        .glyph-clickable {
             cursor: pointer;
         }
 
         .glyph-interactive:hover,
-        .glyph-triangle:hover,
-        .glyph-square:hover {
+        .glyph-triangle:hover
+
+        /* .glyph-square:hover  */
+            {
             fill: white;
             stroke: red;
             stroke-width: 4px;
@@ -581,4 +587,25 @@
 
         .process-cluster-label {
             font-family: 'Inter', sans-serif;
+            pointer-events: none;
+            user-select: none;
+        }
+
+
+        /* Contributions text */
+        .explaination-text {
+            display: block;
+            font-size: 14px;
+            font-weight: normal;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 10px;
+            line-height: normal;
+        }
+
+        /* Override .main-text li styles for explanation-text */
+        .main-text li.explaination-text {
+            font-size: 14px;
+            list-style-type: none;
+            margin-bottom: -8px !important;
+            line-height: 0 !important;
         }

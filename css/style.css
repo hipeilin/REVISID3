@@ -20,6 +20,15 @@
             user-select: none;
         }
 
+        video {
+            max-width: 60%;
+            display: block;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            /* pointer-events: none; */
+            /* user-select: none; */
+        }
+
         .presentation-container {
             width: 100vw;
             height: 100vh;

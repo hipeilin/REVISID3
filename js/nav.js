@@ -1,5 +1,5 @@
 // Presentation navigation
-let currentSlide = 15;
+let currentSlide = 0;
 const slidesWrapper = document.getElementById('slidesWrapper');
 const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
@@ -8,6 +8,7 @@ const nextBtn = document.getElementById('nextBtn');
 const currentSlideDisplay = document.getElementById('currentSlide');
 const totalSlidesDisplay = document.getElementById('totalSlides');
 const jumpToInput = document.getElementById('jumpToInput');
+const progressBar = document.getElementById('progressBar');
 
 // Timer variables
 const timerDisplay = document.getElementById('timer');
@@ -240,6 +241,16 @@ function updateSlide() {
 
     // Handle timer
     handleTimer();
+
+    // Update progress bar
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    if (progressBar && totalSlides > 0) {
+        const progress = ((currentSlide + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
 }
 
 function startTimer() {
@@ -280,8 +291,8 @@ function handleTimer() {
         if (!timerInterval) {
             startTimer();
         }
-    } else {
-        // Reset timer when leaving slide 2
+    } else if (currentSlide === 0) {
+        // Reset timer ONLY when user goes back to the first slide
         if (timerInterval) {
             resetTimer();
             timerElement.classList.remove('active');

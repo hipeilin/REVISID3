@@ -283,6 +283,13 @@ function updateTimerDisplay() {
     const seconds = timerSeconds % 60;
     timerDisplay.textContent = 
         `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Change color to red if timer exceeds 9:00
+    if (timerSeconds >= 9 * 60) {
+        timerDisplay.style.color = "red";
+    } else {
+        timerDisplay.style.color = ""; // Reset to default
+    }
 }
 
 function handleTimer() {

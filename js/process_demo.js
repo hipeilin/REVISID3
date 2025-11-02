@@ -288,6 +288,59 @@ function createProcessModelDemo() {
         .attr('font-weight', 'normal')
         .attr('fill', '#000')
         .text('84');
+
+    // Create legend
+    const legendItems = [
+        { color: '#000000', label: 'Start/End' },
+        { color: '#17542e', label: 'New InfoPanel' },
+        { color: '#a0b0a7', label: 'Revisit InfoPanel' },
+        { color: '#c5b894', label: 'Year Change' },
+        { color: '#C59C94', label: 'Gender Change' }
+    ];
+
+    // Calculate legend position - center it horizontally, place below sequence matrix
+    const legendCircleRadius = 8;
+    const legendSpacing = 4; // spacing between circle and label
+    const legendItemSpacing = 20; // spacing between legend items
+    const legendTotalWidth = legendItems.length * legendItemSpacing - legendItemSpacing;
+    const legendStartX = nodeContentCenter - (legendTotalWidth / 2);
+    const legendY = 80 + matrixRows * (squareSize + squareMargin); // below sequence matrix with some margin
+
+    const legendGroup = g.append('g')
+        .attr('transform', `translate(${legendStartX}, ${legendY})`);
+
+    legendItems.forEach((item, i) => {
+        const itemGroup = legendGroup.append('g')
+            .attr('transform', `translate(0, ${i * legendItemSpacing})`);
+
+        // Circle
+        itemGroup.append('circle')
+            .attr('r', legendCircleRadius)
+            .attr('fill', item.color)
+            .attr('cx', 0)
+            .attr('cy', 0);
+
+        // Label
+        itemGroup.append('text')
+            .attr('class', 'process-legend-label')
+            .attr('x', legendCircleRadius + legendSpacing)
+            .attr('y', 0)
+            .attr('dominant-baseline', 'middle')
+            .attr('font-size', 14)
+            .attr('fill', '#000')
+            .text(item.label);
+    });
+
+    // add title on top of arc diagram
+    const titleGroup = svg.append('g')
+        .attr('transform', `translate(${horizontalCenterOffset}, ${legendY +  matrixRows * (squareSize + squareMargin) + 10})`);
+    titleGroup.append('text')
+        .attr('class', 'process-title')
+        .attr('x', 0)
+        .attr('y', 0)
+        .html('Open InfoPanel &rarr; End Exploration Behavior');
+
+
 }
 
 createProcessModelDemo();

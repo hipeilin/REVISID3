@@ -26,8 +26,13 @@ function init() {
 }
 
 // Color scale for heatmap
-const colorScale = d3.scaleSequential(d3.interpolateBlues)
-    .domain([0, 1]);
+// const colorScale = d3.scaleSequential(d3.interpolateBlues)
+//     .domain([0, 1]);
+
+// Create a color scale for conciseness, min value is 0.38 and max value is 7.7
+const colorScaleIntra = d3.scaleSequential(d3.interpolateOranges)
+    .domain([0.38, 7.66]);
+
 
 /**
  * Create the complete visualization with dendrogram overlaid on heatmap
@@ -70,8 +75,9 @@ function createVisualization(heatmapData, dendroData) {
     const minScore = d3.min(heatmapData, d => d.score);
     const maxScore = d3.max(heatmapData, d => d.score);
 
-    const heatmap_colorscale = d3.scaleSequential(d3.interpolateBlues)
+    const colorscaleInter = d3.scaleSequential(d3.interpolateBlues)
         .domain([maxScore, minScore]);
+
 
     let _svg = d3.select("#clusterDemoSvg")
         .attr("width", width)
@@ -107,7 +113,7 @@ function createVisualization(heatmapData, dendroData) {
         .attr("y", d => (rows.indexOf(d.row)) * cellSize)
         .attr("width", cellSize)
         .attr("height", cellSize)
-        .attr("fill", d => heatmap_colorscale(d.score))
+        .attr("fill", d => colorscaleInter(d.score))
         .attr("stroke", "rgba(255,255,255,0.2)")
         .attr("stroke-width", 0.5);
 
@@ -141,6 +147,8 @@ function createVisualization(heatmapData, dendroData) {
     const legendY = margin.top; // Align with top of heatmap
 
     const defs = svg.append('defs');
+
+    // Inter-cluster gradient
     const gradient = defs.append('linearGradient')
         .attr('id', 'legend-gradient')
         .attr('x1', '0%')
@@ -153,7 +161,7 @@ function createVisualization(heatmapData, dendroData) {
         .enter()
         .append('stop')
         .attr('offset', d => (d * 100) + '%')
-        .attr('stop-color', d => heatmap_colorscale(d));
+        .attr('stop-color', d => colorscaleInter(d));
 
     // Legend rectangle (vertical)
     svg.append('rect')
@@ -170,6 +178,46 @@ function createVisualization(heatmapData, dendroData) {
         .attr('y', legendHeight / 2)
         .attr('transform', `rotate(-90,${legendX + legendWidth + 25},${legendY + legendHeight / 2})`)
         .text('DTW Score')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 12)
+        .attr('fill', 'black');
+
+    // Intra-cluster gradient
+    const gradientIntra = defs.append('linearGradient')
+        .attr('id', 'legend-gradient-intra')
+        .attr('x1', '0%')
+        .attr('x2', '0%')
+        .attr('y1', '0%')
+        .attr('y2', '100%');
+
+    // Normalize the range to match the domain [0.38, 7.66]
+    const intraMin = 0.38;
+    const intraMax = 7.66;
+    const intraRange = intraMax - intraMin;
+
+    gradientIntra.selectAll('stop')
+        .data(d3.range(intraMin, intraMax + 0.01, 0.01))
+        .enter()
+        .append('stop')
+        .attr('offset', d => ((d - intraMin) / intraRange * 100) + '%')
+        .attr('stop-color', d => colorScaleIntra(d));
+
+    // Legend rectangle (vertical)
+    svg.append('rect')
+        .attr('x', legendX + clusterWidth + legendWidth * 2)
+        .attr('y', legendY)
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .style('fill', 'url(#legend-gradient-intra)')
+
+    // Legend label vertical
+    const intraLabelX = legendX + clusterWidth + legendWidth + 15;
+    svg.append('text')
+        .attr('class', 'legend-label')
+        .attr('x', intraLabelX)
+        .attr('y', legendY + legendHeight / 2)
+        .attr('transform', `rotate(-90,${intraLabelX},${legendY + legendHeight / 2})`)
+        .text('Conciseness')
         .attr('text-anchor', 'middle')
         .attr('font-size', 12)
         .attr('fill', 'black');
@@ -317,9 +365,6 @@ function createVisualization(heatmapData, dendroData) {
                 .classed('hovered', false);
         });
 
-    // Create a color scale for conciseness, min value is 0.38 and max value is 7.7
-    const colorScaleIntra = d3.scaleSequential(d3.interpolateOranges)
-        .domain([0.38, 7.66]);
 
     const squareC1 = shapesGroup1.append('rect')
         .attr('class', 'glyph glyph-square glyph-interactive')

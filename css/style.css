@@ -657,10 +657,18 @@
             opacity: 0.8;
         }
 
-        .legend-label {
+        .legend-label,
+        .process-legend-label {
             user-select: none;
             font-family: 'Inter', sans-serif;
             font-size: 12px;
+        }
+
+        .process-title {
+            user-select: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
         }
 
         .dendrogram-node {

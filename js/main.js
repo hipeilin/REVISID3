@@ -313,6 +313,40 @@ function createPipelineDiagram() {
                 }
             });
         }
+        else if (i === 3) {
+            const compDemoDiv = document.getElementById('comparisonDemoDiv');
+            let visible = false;
+            
+            if (compDemoDiv) {
+                compDemoDiv.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s cubic-bezier(0.4,0,0.2,1)';
+                compDemoDiv.style.transform = 'translateY(30px)';
+                compDemoDiv.style.opacity = '0';
+                compDemoDiv.style.display = 'none';
+            }
+            
+            boxGroup.on('click', function () {
+                visible = !visible;
+                if (compDemoDiv) {
+                    if (visible) {
+                        showComparisonDemo(); // Append the image
+                        compDemoDiv.style.display = 'block';
+                        setTimeout(() => {
+                            compDemoDiv.style.transform = 'translateY(0)';
+                            compDemoDiv.style.opacity = '1';
+                        }, 10); // allow reflow for animation
+                    } else {
+                        compDemoDiv.style.transform = 'translateY(30px)';
+                        compDemoDiv.style.opacity = '0';
+                        // Wait for transition before hiding
+                        setTimeout(() => {
+                            if (!visible) { // in case of rapid clicks
+                                compDemoDiv.style.display = 'none';
+                            }
+                        }, 500);
+                    }
+                }
+            });
+        }
         // Last box: click to toggle label via CSS class
         else if (i === 4) {
             const pipelineDetailLines = [

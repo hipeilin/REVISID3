@@ -1,5 +1,5 @@
 // Presentation navigation
-let currentSlide = 14;
+let currentSlide = 15;
 const slidesWrapper = document.getElementById('slidesWrapper');
 const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
@@ -8,6 +8,13 @@ const nextBtn = document.getElementById('nextBtn');
 const currentSlideDisplay = document.getElementById('currentSlide');
 const totalSlidesDisplay = document.getElementById('totalSlides');
 const jumpToInput = document.getElementById('jumpToInput');
+
+// Timer variables
+const timerDisplay = document.getElementById('timer');
+const timerElement = document.querySelector('.timer-display');
+let timerInterval = null;
+let timerSeconds = 0;
+const TARGET_SLIDE = 1; // Slide 2 (0-indexed)
 
 // Track reveal state for each slide
 let slideRevealState = {};
@@ -230,6 +237,56 @@ function updateSlide() {
     setTimeout(() => {
         animateSlideContainers(currentSlide);
     }, 200); // Small delay to ensure reset happens first
+
+    // Handle timer
+    handleTimer();
+}
+
+function startTimer() {
+    if (timerInterval) return; // Timer already running
+    
+    timerSeconds = 0;
+    timerInterval = setInterval(() => {
+        timerSeconds++;
+        updateTimerDisplay();
+    }, 1000);
+    
+    timerElement.classList.add('active');
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function resetTimer() {
+    stopTimer();
+    timerSeconds = 0;
+    updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timerSeconds / 60);
+    const seconds = timerSeconds % 60;
+    timerDisplay.textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function handleTimer() {
+    if (currentSlide === TARGET_SLIDE) {
+        // Start or continue timer on slide 2
+        if (!timerInterval) {
+            startTimer();
+        }
+    } else {
+        // Reset timer when leaving slide 2
+        if (timerInterval) {
+            resetTimer();
+            timerElement.classList.remove('active');
+        }
+    }
 }
 
 function nextSlide() {
@@ -245,10 +302,6 @@ function prevSlide() {
         updateSlide();
     }
 }
-
-// Button navigation
-prevBtn.addEventListener('click', prevSlide);
-nextBtn.addEventListener('click', nextSlide);
 
 // Keyboard navigation
 // document.addEventListener('keydown', (e) => {

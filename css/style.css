@@ -169,6 +169,80 @@
             pointer-events: none;
         }
 
+        /* Timer display */
+        .timer-display {
+            position: fixed;
+            top: 30px;
+            right: 150px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            z-index: 1000;
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.1);
+            font-family: consolas, monospace;
+            user-select: none;
+            pointer-events: none;
+            display: none;
+        }
+
+        .timer-display.active {
+            display: block;
+        }
+
+        /* Source display */
+        .source {
+            position: fixed;
+            top: 30px;
+            right: 150px;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            z-index: 1000;
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.1);
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+        }
+
+        .source a {
+            color: #1D3160;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .source a:hover {
+            color: #DA171C;
+            text-decoration: underline;
+        }
+
+        .source::after {
+            content: '↓';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: #1D3160;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(5px);
+            }
+        }
+
         /* SVG Container */
         .svg-container {
             background: rgba(255, 255, 255, 0.1);
@@ -271,7 +345,21 @@
             display: block;
             user-select: none;
             font-family: 'Inter', sans-serif;
+            margin-top: 1rem;
             text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide .main-text a {
+            transition: all 0.6s ease;
+            color: #1D3160;
+            text-decoration-line: underline;
+            text-decoration-style: dashed;
+        }
+
+        .slide .main-text a:hover {
+            transition: all 0.3s ease;
+            color: #fff;
+            background: #1D3160
         }
 
         .main-text li {
@@ -373,6 +461,50 @@
             font-size: 2rem;
             font-weight: 700;
             text-decoration: underline;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .profile-lastname {
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .profile-email {
+            transition: all 0.6s ease;
+            font-size: 1rem;
+            font-style: italic;
+            color: #666;
+            margin-top: .5rem;
+            text-decoration: underline;
+            text-decoration-color: #666;
+        }
+
+        .profile-email:hover {
+            transition: all 0.3s ease;
+            color: #fff;
+            background: #DA171C;
+            text-decoration: none;
+        }
+
+        .affiliation {
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .affiliation-link {
+            transition: all 0.6s ease;
+            font-style: italic;
+            color: #666;
+            text-decoration: underline;
+            text-decoration-color: #666;
+        }
+
+        .affiliation-link:hover {
+            transition: all 0.3s ease;
+            color: #fff;
+            background: #DA171C;
+            text-decoration: none;
         }
 
 
@@ -593,19 +725,32 @@
 
 
         /* Contributions text */
-        .explaination-text {
+        /* .explaination-text {
             display: block;
             font-size: 14px;
             font-weight: normal;
             font-family: 'Inter', sans-serif;
             margin-bottom: 10px;
             line-height: normal;
-        }
+        } */
 
         /* Override .main-text li styles for explanation-text */
         .main-text li.explaination-text {
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: bold;
             list-style-type: none;
             margin-bottom: -8px !important;
+            margin-left: 4px !important;
             line-height: 0 !important;
+        }
+
+        /* Last slide static styles */
+        .slide:last-child .paragraph-container {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide:last-child .profile {
+            opacity: 1;
+            transform: translateY(0);
         }

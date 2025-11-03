@@ -284,17 +284,17 @@ function updateTimerDisplay() {
     timerDisplay.textContent = 
         `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     
-    // 09:00 to 10:59 - font color red; 11:00 to 11:59 - font white, background red; otherwise reset styles.
+    // 09:00 to 10:59 - font color red; 11:00 to 11:59 - font white, timer-display's background red; otherwise reset styles.
     if (timerSeconds >= 9 * 60 && timerSeconds < 11 * 60) {
         timerDisplay.style.color = "red";
-        timerDisplay.style.backgroundColor = "";
+        timerElement.style.backgroundColor = ""; // timer-display's background normal
     } else if (timerSeconds >= 11 * 60 && timerSeconds < 12 * 60) {
         timerDisplay.style.color = "white";
-        timerDisplay.style.backgroundColor = "red";
+        timerElement.style.backgroundColor = "red"; // timer-display's background turns red
     } else {
         // Reset to default
         timerDisplay.style.color = "";
-        timerDisplay.style.backgroundColor = "";
+        timerElement.style.backgroundColor = "";
     }
 }
 

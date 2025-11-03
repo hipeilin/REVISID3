@@ -284,13 +284,20 @@ function updateTimerDisplay() {
     timerDisplay.textContent = 
         `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     
-    // Change color to red if timer exceeds 9:00
-    if (timerSeconds >= 9 * 60) {
+    // 09:00 to 10:59 - font color red; 11:00 to 11:59 - font white, background red; otherwise reset styles.
+    if (timerSeconds >= 9 * 60 && timerSeconds < 11 * 60) {
         timerDisplay.style.color = "red";
+        timerDisplay.style.backgroundColor = "";
+    } else if (timerSeconds >= 11 * 60 && timerSeconds < 12 * 60) {
+        timerDisplay.style.color = "white";
+        timerDisplay.style.backgroundColor = "red";
     } else {
-        timerDisplay.style.color = ""; // Reset to default
+        // Reset to default
+        timerDisplay.style.color = "";
+        timerDisplay.style.backgroundColor = "";
     }
 }
+
 
 function handleTimer() {
     if (currentSlide === TARGET_SLIDE) {

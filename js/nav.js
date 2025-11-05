@@ -288,7 +288,7 @@ function updateTimerDisplay() {
     if (timerSeconds >= 9 * 60 && timerSeconds < 11 * 60) {
         timerDisplay.style.color = "red";
         timerElement.style.backgroundColor = ""; // timer-display's background normal
-    } else if (timerSeconds >= 11 * 60 && timerSeconds < 12 * 60) {
+    } else if (timerSeconds >= 11 * 60) {
         timerDisplay.style.color = "white";
         timerElement.style.backgroundColor = "red"; // timer-display's background turns red
     } else {
